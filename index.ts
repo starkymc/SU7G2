@@ -5,7 +5,7 @@ import { PrismaClient } from '@prisma/client';
 
 dotenv.config();
 
-//const prisma = new PrismaClient();
+//const prismax = new PrismaClient();
 
 const app: Express = express();
 //const app = express();
