@@ -1,5 +1,5 @@
-<h1 align="center">Integrantes del grupo </h1>
+<h1 align="center"> Integrantes del grupo </h1>
 
-- Starky Medina Caldas
-- Jhohan jancco Chara
-- Henry Ccoillo
+- 👨‍💻 Starky Medina Caldas
+- 👨‍💻 Jhohan jancco Chara
+- 👨‍💻 Henry Ccoillo
