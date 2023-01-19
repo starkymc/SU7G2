@@ -11,3 +11,22 @@ datasource db {
 }
 
 
+model Songs{
+  id Int @id @default(autoincrement() )
+  name String
+  artist String
+  album String
+  year DateTime
+  genre String
+  duration Int
+  privacy Boolean @default(false)
+  playlists Playlist[]
+  
+}
+
+model Playlist{
+  id Int @id @default(autoincrement() )
+  name String
+  song Songs @relation(fields: [songId], references: [id])
+  songId Int
+}
