@@ -14,15 +14,15 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 Object.defineProperty(exports, "__esModule", { value: true });
 const express_1 = __importDefault(require("express"));
 const dotenv_1 = __importDefault(require("dotenv"));
+const client_1 = require("@prisma/client");
 dotenv_1.default.config();
+const prisma = new client_1.PrismaClient();
 const app = (0, express_1.default)();
 const port = process.env.PORT;
 app.use(express_1.default.json());
 app.get('/', (req, res) => {
     res.send('<h1>Express server</h1>');
 });
-const client_1 = require("@prisma/client");
-const prisma = new client_1.PrismaClient();
 app.post('/api/v1/users', (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     const { name, email, password, date_born } = req.body;
     const result = yield prisma.usuario.create({
@@ -34,6 +34,22 @@ app.post('/api/v1/users', (req, res) => __awaiter(void 0, void 0, void 0, functi
         },
     });
     return res.json(result);
+}));
+app.get('/api/v1/users', (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+    const users = yield prisma.usuario.findMany();
+    return res.json(users);
+}));
+app.post('/api/v1/playlist', (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+    const { name, userEmail } = req.body;
+    const result = yield prisma.playlist.create({
+        data: {
+            name: name,
+            user: { connect: { email: userEmail } },
+        },
+    });
+    return res.json(result);
+}));
+app.get('/api/v1/playlist', (req, res) => __awaiter(void 0, void 0, void 0, function* () {
 }));
 app.listen(port, () => {
     console.log(`http://localhost:${port}`);

@@ -1,18 +1,10 @@
 import express, { Express, Request, Response } from 'express';
 import dotenv from 'dotenv';
-<<<<<<< HEAD
-=======
-import { PrismaClient } from '@prisma/client';
->>>>>>> c8342491b749aafeb6bb582c31db1b05a9ddcf13
-
+import { PrismaClient } from '@prisma/client'
 
 dotenv.config();
 
-<<<<<<< HEAD
-=======
-//const prisma = new PrismaClient();
->>>>>>> c8342491b749aafeb6bb582c31db1b05a9ddcf13
-
+const prisma = new PrismaClient();
 const app: Express = express();
 
 const port = process.env.PORT;
@@ -23,8 +15,7 @@ app.get('/',(req: Request,res: Response) => {
     res.send('<h1>Express server</h1>');
 });
 
-import { PrismaClient } from '@prisma/client'
-const prisma = new PrismaClient();
+
 
 app.post('/api/v1/users', async(req,res)=>{
     const { name, email, password,date_born } = req.body;
@@ -40,8 +31,27 @@ app.post('/api/v1/users', async(req,res)=>{
       return res.json(result);      
     });
 
+app.get('/api/v1/users', async(req:Request,res:Response)=>{
+    const users = await prisma.usuario.findMany();
+    return res.json(users);
 
+})
 
+app.post('/api/v1/playlist', async(req:Request,res:Response)=>{
+    const { name, userEmail } = req.body;
+    const result = await prisma.playlist.create({
+        data: {
+          name: name,
+          user: {connect: {email :userEmail}},
+        },
+      });
+
+      return res.json(result);      
+    });
+
+app.get('/api/v1/playlist', async(req:Request,res:Response)=>{
+
+})
 
 app.listen(port,() => {
     console.log(`http://localhost:${port}`);
