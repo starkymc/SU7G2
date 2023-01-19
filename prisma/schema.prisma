@@ -16,7 +16,7 @@ model Songs{
   name String
   artist String
   album String
-  year DateTime
+  year Int
   genre String
   duration Int
   privacy Boolean @default(false)

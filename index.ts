@@ -1,14 +1,13 @@
 import express, { Express, Request, Response } from 'express';
 import dotenv from 'dotenv';
-import { PrismaClient } from '@prisma/client';
-
 
 dotenv.config();
 
-//const prismax = new PrismaClient();
+const get = require('./routes/get');
+const post = require('./routes/post');
 
 const app: Express = express();
-//const app = express();
+
 
 const port = process.env.PORT;
 
@@ -19,6 +18,14 @@ app.get('/',(req: Request,res: Response) => {
 });
 
 
+// Metodos Get
+app.get('/get_playlist', get.get_playlist);
+
+
+// Metodos Post
+app.post("/create_song", post.create_song);
+
+app.post("/create_playlist", post.create_playlist);
 
 
 
