@@ -1,11 +1,12 @@
 import express, { Express, Request, Response } from 'express';
 import dotenv from 'dotenv';
+
 import { PrismaClient } from '@prisma/client';
 
 
 dotenv.config();
 
-//const prisma = new PrismaClient();
+// const prisma = new PrismaClient();
 
 const app: Express = express();
 //const app = express();
@@ -17,6 +18,7 @@ app.use(express.json());
 app.get('/',(req: Request,res: Response) => {
     res.send('<h1>Express server</h1>');
 });
+// prueba de la rama Jancco 
 
 
 
