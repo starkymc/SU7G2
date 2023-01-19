@@ -23,15 +23,32 @@ exports.create_song = async (req: Request,res: Response) => {
 };
 
 // Ruta create_playlist - Permite crear playlist y agregarle un cancion x id 
+
 exports.create_playlist = async (req:Request, res:Response ) => {
-    const { name,song } = req.body;
+    const { id,name,usuario,song } = req.body;
     const playlist = await prisma.playlist.create({
         data: 
             {
+            id: id,
             name: name,
-            song: { connect: { id: song }}
+            usuario: { connect: { id: usuario}},
+            song: { connect: {id: song}}
         },
     });
     console.log(`Playlist creada\n name: ${name} \n `);
     res.json(playlist);
 }
+
+
+exports.create_user = async(req: Request,res: Response)=>{
+    const { name, email, password,date_born } = req.body;
+    const result = await prisma.usuario.create({
+        data: {
+          name: name,
+          email: email,
+          password:password,
+          date_born:date_born
+        },
+      });
+      return res.json(result);      
+    };

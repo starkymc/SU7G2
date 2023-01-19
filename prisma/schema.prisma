@@ -10,6 +10,16 @@ datasource db {
   url      = env("DATABASE_URL")
 }
 
+model Usuario {
+  id    Int     @id @default(autoincrement())
+  email String  @unique
+  name  String
+  password String
+  last_session DateTime @default(now())
+  created_at DateTime @default(now())
+  date_born String?
+  playlists Playlist[]
+}
 
 model Songs{
   id Int @id @default(autoincrement() )
@@ -21,12 +31,15 @@ model Songs{
   duration Int
   privacy Boolean @default(false)
   playlists Playlist[]
-  
 }
 
 model Playlist{
   id Int @id @default(autoincrement() )
-  name String
+  name String @unique
+  usuario Usuario @relation(fields: [userId], references: [id])
+  userId Int 
   song Songs @relation(fields: [songId], references: [id])
   songId Int
+  
 }
+
