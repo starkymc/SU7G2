@@ -50,6 +50,29 @@ app.post('/api/v1/playlist', (req, res) => __awaiter(void 0, void 0, void 0, fun
     return res.json(result);
 }));
 app.get('/api/v1/playlist', (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+    const playlists = yield prisma.playlist.findMany({
+        include: { songs: true },
+    });
+    return res.json(playlists);
+}));
+app.post('/api/v1/songs', (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+    const { name, artist, album, year, genre, duration, namePlaylist } = req.body;
+    const result = yield prisma.song.create({
+        data: {
+            name: name,
+            artist: artist,
+            album: album,
+            year: year,
+            genre: genre,
+            duration: duration,
+            playlist: { connect: { name: namePlaylist } },
+        },
+    });
+    return res.json(result);
+}));
+app.get('/api/v1/songs', (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+    const songs = yield prisma.song.findMany();
+    return res.json(songs);
 }));
 app.listen(port, () => {
     console.log(`http://localhost:${port}`);
