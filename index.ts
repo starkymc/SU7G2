@@ -18,7 +18,7 @@ app.get('/',(req: Request,res: Response) => {
 import bcrypt from 'bcryptjs';
 const jwt = require('jsonwebtoken')
 
-
+import {TokenValidation} from "./veriToken"
 app.post('/api/v1/users', async(req,res)=>{
     const { name, email, password,date_born } = req.body;
     const passwordHash = await bcrypt.hash(password, 10);
@@ -37,7 +37,7 @@ app.post('/api/v1/users', async(req,res)=>{
     return res.status(201).json({result,token})
 });
 
-app.get('/api/v1/users', async(req:Request,res:Response)=>{
+app.get('/api/v1/users',TokenValidation, async(req:Request,res:Response)=>{
     const users = await prisma.usuario.findMany();
     return res.json(users);
 })
@@ -102,14 +102,11 @@ app.post('/api/v1/users/login', async(req:Request,res:Response)=>{
     return res.status(201).json(token);
 })
 
-import {TokenValidation} from "./veriToken"
+
 
 app.get('/a',TokenValidation,(req: Request,res: Response) => {
-  res.send('<h1>Express server</h1>');
+    res.send('<h1>Express server</h1>');
 });
-
-
-
 
 app.listen(port,() => {
     console.log(`http://localhost:${port}`);

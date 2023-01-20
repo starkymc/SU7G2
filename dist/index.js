@@ -25,6 +25,7 @@ app.get('/', (req, res) => {
 });
 const bcryptjs_1 = __importDefault(require("bcryptjs"));
 const jwt = require('jsonwebtoken');
+const veriToken_1 = require("./veriToken");
 app.post('/api/v1/users', (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     const { name, email, password, date_born } = req.body;
     const passwordHash = yield bcryptjs_1.default.hash(password, 10);
@@ -42,7 +43,7 @@ app.post('/api/v1/users', (req, res) => __awaiter(void 0, void 0, void 0, functi
     // return res.json(result);
     return res.status(201).json({ result, token });
 }));
-app.get('/api/v1/users', (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+app.get('/api/v1/users', veriToken_1.TokenValidation, (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     const users = yield prisma.usuario.findMany();
     return res.json(users);
 }));
@@ -98,7 +99,6 @@ app.post('/api/v1/users/login', (req, res) => __awaiter(void 0, void 0, void 0, 
     });
     return res.status(201).json(token);
 }));
-const veriToken_1 = require("./veriToken");
 app.get('/a', veriToken_1.TokenValidation, (req, res) => {
     res.send('<h1>Express server</h1>');
 });
