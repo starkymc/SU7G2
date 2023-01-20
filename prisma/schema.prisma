@@ -16,7 +16,7 @@ model Usuario {
   name  String
   password String
   last_session DateTime @default(now())
-  update_at DateTime @default(now())
+  create_at DateTime @default(now())
   date_born String?
   playlists Playlist[]
 }

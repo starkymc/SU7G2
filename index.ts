@@ -1,15 +1,10 @@
-import express, { Express, Request, Response } from 'express';
+import express, { Express, Request, Response, NextFunction } from 'express';
 import dotenv from 'dotenv';
-
 import { PrismaClient } from '@prisma/client';
-
-
 dotenv.config();
-
+const jwt = require("jsonwebtoken");
 const prisma = new PrismaClient();
-
 const app: Express = express();
-
 const port = process.env.PORT;
 
 app.use(express.json());
@@ -35,7 +30,27 @@ app.get('/api/v1/users', async(req:Request,res:Response)=>{
     const users = await prisma.usuario.findMany();
     return res.json(users);
 })
-
+app.post("/api/v1/users/login", async(req: Request , res: Response) => {
+  const user = {
+      email: "email@gmail.com",
+      password: "123456"
+  }
+  jwt.sign({user: user}, 'secretkey', {expiresIn: '1h'}, (err: Response, token: Response)=>{
+      res.json({
+          token: token
+      });
+  });
+});
+function verifyToken(req: any, res: Response, next: NextFunction){
+  const bearerHeader = req.headers['authorization'];
+  if(typeof bearerHeader !== 'undefined'){
+      const bearerToken = bearerHeader.split(" ")[1];
+      req.token = bearerToken;
+      next();
+  }else{
+      res.sendStatus(403)
+  }
+}
 app.post('/api/v1/playlist', async(req:Request, res:Response)=>{
     const { name, user } = req.body;
     const result = await prisma.playlist.create({
@@ -71,10 +86,20 @@ app.post('/api/v1/songs', async(req:Request,res:Response)=>{
     });
 
 
-app.get('/api/v1/songs', async(req:Request,res:Response)=>{
+app.get('/api/v1/songs', verifyToken, async(req: any, res: Response)=>{
         const songs = await prisma.song.findMany();
-        return res.json(songs);
-    })
+        return jwt.verify(req.token, 'secretkey', (error: Response)=>{
+          if(error){
+              res.sendStatus(403);
+          }else{
+            res.json(songs);
+          }
+    });
+});
+
+
+
+
 
 
 

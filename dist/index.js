@@ -16,6 +16,7 @@ const express_1 = __importDefault(require("express"));
 const dotenv_1 = __importDefault(require("dotenv"));
 const client_1 = require("@prisma/client");
 dotenv_1.default.config();
+const jwt = require("jsonwebtoken");
 const prisma = new client_1.PrismaClient();
 const app = (0, express_1.default)();
 const port = process.env.PORT;
@@ -39,6 +40,28 @@ app.get('/api/v1/users', (req, res) => __awaiter(void 0, void 0, void 0, functio
     const users = yield prisma.usuario.findMany();
     return res.json(users);
 }));
+app.post("/api/v1/users/login", (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+    const user = {
+        email: "email@gmail.com",
+        password: "123456"
+    };
+    jwt.sign({ user: user }, 'secretkey', { expiresIn: '1h' }, (err, token) => {
+        res.json({
+            token: token
+        });
+    });
+}));
+function verifyToken(req, res, next) {
+    const bearerHeader = req.headers['authorization'];
+    if (typeof bearerHeader !== 'undefined') {
+        const bearerToken = bearerHeader.split(" ")[1];
+        req.token = bearerToken;
+        next();
+    }
+    else {
+        res.sendStatus(403);
+    }
+}
 app.post('/api/v1/playlist', (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     const { name, user } = req.body;
     const result = yield prisma.playlist.create({
@@ -70,9 +93,16 @@ app.post('/api/v1/songs', (req, res) => __awaiter(void 0, void 0, void 0, functi
     });
     return res.json(result);
 }));
-app.get('/api/v1/songs', (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+app.get('/api/v1/songs', verifyToken, (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     const songs = yield prisma.song.findMany();
-    return res.json(songs);
+    return jwt.verify(req.token, 'secretkey', (error) => {
+        if (error) {
+            res.sendStatus(403);
+        }
+        else {
+            res.json(songs);
+        }
+    });
 }));
 app.listen(port, () => {
     console.log(`http://localhost:${port}`);
