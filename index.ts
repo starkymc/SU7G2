@@ -15,20 +15,27 @@ app.get('/',(req: Request,res: Response) => {
     res.send('<h1>Express server</h1>');
 });
 
+import bcrypt from 'bcryptjs';
+const jwt = require('jsonwebtoken')
 
 
 app.post('/api/v1/users', async(req,res)=>{
     const { name, email, password,date_born } = req.body;
+    const passwordHash = await bcrypt.hash(password, 10);
     const result = await prisma.usuario.create({
         data: {
           name: name,
           email: email,
-          password:password,
+          password:passwordHash,
           date_born:date_born
         },
-      });
-      return res.json(result);      
     });
+    const token = jwt.sign(result,process.env.TOKEN_SECRET,{
+        expiresIn: "1h",
+    });
+    // return res.json(result);
+    return res.status(201).json({result,token})
+});
 
 app.get('/api/v1/users', async(req:Request,res:Response)=>{
     const users = await prisma.usuario.findMany();
@@ -42,9 +49,9 @@ app.post('/api/v1/playlist', async(req:Request,res:Response)=>{
           name: name,
           user: {connect: {email :userEmail}},
         },
-      });
-      return res.json(result);      
     });
+    return res.json(result);      
+});
 
 app.get('/api/v1/playlist', async(req:Request,res:Response)=>{
     const playlists = await prisma.playlist.findMany({
@@ -65,15 +72,43 @@ app.post('/api/v1/songs', async(req:Request,res:Response)=>{
           duration:duration,
           playlist: {connect: {name :namePlaylist}},
         },
-      });
-      return res.json(result);      
     });
+    return res.json(result);      
+});
 
 
 app.get('/api/v1/songs', async(req:Request,res:Response)=>{
-        const songs = await prisma.song.findMany();
-        return res.json(songs);
+    const songs = await prisma.song.findMany();
+    return res.json(songs);
+})
+
+
+app.post('/api/v1/users/login', async(req:Request,res:Response)=>{
+    const {email,password }= req.body;
+
+    const user = await prisma.usuario.findUnique({
+        where:{
+            email :email,
+        }
     })
+    if (!user) return res.status(400).json('Email or password is wrong');
+  
+    const checkPassword = bcrypt.compareSync(password,user.password);
+    if (!checkPassword) return res.status(400).json('Email or password is wrong');
+  
+    const token = jwt.sign(user,process.env.TOKEN_SECRET,{
+      expiresIn: "1h",
+    });
+    return res.status(201).json(token);
+})
+
+import {TokenValidation} from "./veriToken"
+
+app.get('/a',TokenValidation,(req: Request,res: Response) => {
+  res.send('<h1>Express server</h1>');
+});
+
+
 
 
 app.listen(port,() => {
