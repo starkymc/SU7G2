@@ -39,6 +39,9 @@ app.post("/create_song", post.create_song);
 // Create a playlist with the userid and the songid
 app.post("/create_playlist", post.create_playlist);
 
+app.post("/login", post.login);
+
+
 
 
 
