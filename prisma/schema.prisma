@@ -36,7 +36,7 @@ model Song{
   name   String
   artist String
   album  String
-  year   String
+  year   Int
   genre  String
   duration Int
   playlistid Int
