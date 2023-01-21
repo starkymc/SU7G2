@@ -7,8 +7,8 @@ const prisma = new PrismaClient();
 //const jwt = require('jsonwebtoken')
 
 // Create a song and is inserted the playlistid
-exports.create_song = async(req:Request,res:Response)=>{
-    const { name, artist, album, year, genre, duration, namePlaylist } = req.body;
+exports.create_song = async(req:Request, res:Response)=>{
+    const { name, artist, album, year, genre, duration, isxprivate, namePlaylist} = req.body;
     const result = await prisma.song.create({
         data: {
           name: name,
@@ -17,6 +17,7 @@ exports.create_song = async(req:Request,res:Response)=>{
           year: year,
           genre: genre,
           duration: duration,
+          isxprivate: isxprivate,
           playlist: {connect: {name: namePlaylist}},
         },
     });
@@ -33,7 +34,7 @@ exports.get_songs = async(req: Request,res: Response)=>{
 // devuelve la lista de songs por id
 exports.get_songs_id = async (req: Request,res: Response) => {
     const { id } = req.params;
-    const { name, artist, album, year, genre, duration, playlistid } = req.body;
+    const { name, artist, album, year, genre, duration, playlistid, isprivate } = req.body;
     const songs = await prisma.song.findFirst({
         where: {id: Number(id)}
        

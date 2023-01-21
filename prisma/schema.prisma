@@ -39,6 +39,7 @@ model Song{
   year   Int
   genre  String
   duration Int
+  isxprivate Boolean  @default(false)
   playlistid Int
   playlist Playlist @relation(fields: [playlistid], references: [id])
 }
