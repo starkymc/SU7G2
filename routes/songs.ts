@@ -8,23 +8,23 @@ const prisma = new PrismaClient();
 
 // Create a song and is inserted the playlistid
 exports.create_song = async(req:Request,res:Response)=>{
-    const { name, artist,album,year,genre,duration,namePlaylist } = req.body;
+    const { name, artist, album, year, genre, duration, namePlaylist } = req.body;
     const result = await prisma.song.create({
         data: {
           name: name,
-          artist:artist,
-          album:album,
-          year:year,
-          genre:genre,
-          duration:duration,
-          playlist: {connect: {name :namePlaylist}},
+          artist: artist,
+          album: album,
+          year: year,
+          genre: genre,
+          duration: duration,
+          playlist: {connect: {name: namePlaylist}},
         },
     });
     return res.json(result);      
 };
 
 
-exports.get_songs = async(req:Request,res:Response)=>{
+exports.get_songs = async(req: Request,res: Response)=>{
     const songs = await prisma.song.findMany();
     return res.json(songs);
 };

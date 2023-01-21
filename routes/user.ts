@@ -27,7 +27,7 @@ exports.create_user =  async(req: Request,res: Response)=>{
 };
 
 // 
-exports.get_users = TokenValidation, async(req:Request,res:Response)=>{
+exports.get_users = async(req:Request,res:Response)=>{
     const users = await prisma.usuario.findMany();
     return res.json(users);
 };

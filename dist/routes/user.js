@@ -34,7 +34,7 @@ exports.create_user = (req, res) => __awaiter(void 0, void 0, void 0, function* 
     return res.status(201).json({ result });
 });
 // 
-exports.get_users = veriToken_1.TokenValidation, (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+exports.get_users = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     const users = yield prisma.usuario.findMany();
     return res.json(users);
 });
