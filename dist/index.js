@@ -1,28 +1,21 @@
 "use strict";
-var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, generator) {
-    function adopt(value) { return value instanceof P ? value : new P(function (resolve) { resolve(value); }); }
-    return new (P || (P = Promise))(function (resolve, reject) {
-        function fulfilled(value) { try { step(generator.next(value)); } catch (e) { reject(e); } }
-        function rejected(value) { try { step(generator["throw"](value)); } catch (e) { reject(e); } }
-        function step(result) { result.done ? resolve(result.value) : adopt(result.value).then(fulfilled, rejected); }
-        step((generator = generator.apply(thisArg, _arguments || [])).next());
-    });
-};
 var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 const express_1 = __importDefault(require("express"));
-const dotenv_1 = __importDefault(require("dotenv"));
-const client_1 = require("@prisma/client");
-dotenv_1.default.config();
-const prisma = new client_1.PrismaClient();
+//import { PrismaClient } from '@prisma/client'
+const user = require('./routes/user');
+const songs = require('./routes/songs');
+const playlist = require('./routes/playlist');
 const app = (0, express_1.default)();
 const port = process.env.PORT;
+//const prisma = new PrismaClient();
 app.use(express_1.default.json());
 app.get('/', (req, res) => {
     res.send('<h1>Express server</h1>');
 });
+<<<<<<< HEAD
 const bcryptjs_1 = __importDefault(require("bcryptjs"));
 const jwt = require('jsonwebtoken');
 const veriToken_1 = require("./veriToken");
@@ -154,6 +147,29 @@ app.post('/api/v1/users/login', (req, res) => __awaiter(void 0, void 0, void 0, 
 app.get('/a', veriToken_1.TokenValidation, (req, res) => {
     res.send('<h1>Express server</h1>');
 });
+=======
+// ------------- Methods User ----------------
+// Create the user
+app.post('/api/v1/users', user.create_user);
+// Show all the users with token
+app.get('/api/v1/users', user.get_users);
+// Verify token
+app.get('/api/v1/users/verifyToken', user.verify_token);
+// User login
+app.post('/api/v1/users/login', user.login);
+// ------------- Methods Playlist ----------------
+// Create the playlist with the user 
+app.post('/api/v1/playlist', playlist.create_playlist);
+// Show all the playlists with the songs
+app.get('/api/v1/playlist', playlist.get_playlists);
+// ------------- Methods Songs ----------------
+// Create the song with and is inserted the playlist
+app.post('/api/v1/songs', songs.create_song);
+// Show all the songs 
+app.get('/api/v1/songs', songs.get_songs);
+// Show the songs for id
+app.get('/api/v1/songs/:id', songs.get_songs_id);
+>>>>>>> main
 app.listen(port, () => {
     console.log(`http://localhost:${port}`);
 });

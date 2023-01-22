@@ -1,13 +1,21 @@
+<<<<<<< HEAD
 import express, { Express, Request, Response,NextFunction} from 'express';
 import dotenv from 'dotenv';
 import { PrismaClient } from '@prisma/client'
+=======
+import express, { Express, Request, Response } from 'express';
+//import { PrismaClient } from '@prisma/client'
+>>>>>>> main
 
-dotenv.config();
 
-const prisma = new PrismaClient();
+const user = require('./routes/user');
+const songs = require('./routes/songs');
+const playlist = require('./routes/playlist');
+
 const app: Express = express();
 
 const port = process.env.PORT;
+//const prisma = new PrismaClient();
 
 app.use(express.json());
 
@@ -15,9 +23,8 @@ app.get('/',(req: Request,res: Response) => {
     res.send('<h1>Express server</h1>');
 });
 
-import bcrypt from 'bcryptjs';
-const jwt = require('jsonwebtoken')
 
+<<<<<<< HEAD
 import {TokenValidation} from "./veriToken"
 
 app.post('/api/v1/users', async(req,res)=>{
@@ -133,11 +140,32 @@ app.get('/api/v1/songs', async(req:Request,res:Response,next:NextFunction)=>{
         return next(res.status(400).json('Access token is Incorrect'))
     }
 });
+=======
+// ------------- Methods User ----------------
+
+// Create the user
+app.post('/api/v1/users', user.create_user);
+// Show all the users with token
+app.get('/api/v1/users', user.get_users);
+// Verify token
+app.get('/api/v1/users/verifyToken', user.verify_token);
+// User login
+app.post('/api/v1/users/login', user.login);
 
 
-app.post('/api/v1/users/login', async(req:Request,res:Response)=>{
-    const {email,password }= req.body;
+// ------------- Methods Playlist ----------------
 
+// Create the playlist with the user 
+app.post('/api/v1/playlist', playlist.create_playlist);
+
+// Show all the playlists with the songs
+app.get('/api/v1/playlist', playlist.get_playlists);
+>>>>>>> main
+
+
+// ------------- Methods Songs ----------------
+
+<<<<<<< HEAD
     const user = await prisma.usuario.findUnique({
         where:{
             email :email,
@@ -154,12 +182,19 @@ app.post('/api/v1/users/login', async(req:Request,res:Response)=>{
     });
     return res.status(201).json(token);
 })
+=======
+// Create the song with and is inserted the playlist
+app.post('/api/v1/songs', songs.create_song);
+
+// Show all the songs 
+app.get('/api/v1/songs', songs.get_songs);
+
+// Show the songs for id
+app.get('/api/v1/songs/:id', songs.get_songs_id);
+>>>>>>> main
 
 
 
-app.get('/a',TokenValidation,(req: Request,res: Response) => {
-    res.send('<h1>Express server</h1>');
-});
 
 app.listen(port,() => {
     console.log(`http://localhost:${port}`);

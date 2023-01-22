@@ -10,17 +10,17 @@ datasource db {
   url      = env("DATABASE_URL")
 }
 
-
 model Usuario {
   id    Int     @id @default(autoincrement())
   email String  @unique
   name  String
   password String
   last_session DateTime @default(now())
-  created_at DateTime @default(now())
+  create_at DateTime @default(now())
   date_born String?
   playlists Playlist[]
 }
+
 
 
 model Playlist{
@@ -36,7 +36,7 @@ model Song{
   name   String
   artist String
   album  String
-  year   String
+  year   Int
   genre  String
   duration Int
   privacy Boolean @default(false)
