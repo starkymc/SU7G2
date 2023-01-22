@@ -29,6 +29,7 @@ exports.create_song = (req, res) => __awaiter(void 0, void 0, void 0, function* 
     });
     return res.json(result);
 });
+// con token denegna, pero autenticado no funciona xd
 exports.get_songs = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     const songs = yield prisma.song.findMany();
     return res.json(songs);
