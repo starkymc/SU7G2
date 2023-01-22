@@ -1,7 +1,8 @@
 import { PrismaClient } from "@prisma/client";
 import { Request, Response } from "express";
 //import bcrypt from 'bcryptjs';
-//import {TokenValidation} from "./../veriToken"
+// import {TokenValidation} from "./../veriToken"
+import {TokenValidation} from "./../veriToken"
 
 const prisma = new PrismaClient();
 //const jwt = require('jsonwebtoken')
@@ -25,7 +26,7 @@ exports.create_song = async(req:Request, res:Response)=>{
 };
 
 
-exports.get_songs = async(req: Request,res: Response)=>{
+exports.get_songs = TokenValidation, async(req: Request,res: Response)=>{
     const songs = await prisma.song.findMany();
     return res.json(songs);
 };
