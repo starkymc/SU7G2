@@ -39,6 +39,7 @@ model Song{
   year   String
   genre  String
   duration Int
-  playlistid Int
+  privacy Boolean @default(false)
   playlist Playlist @relation(fields: [playlistid], references: [id])
+  playlistid Int
 }

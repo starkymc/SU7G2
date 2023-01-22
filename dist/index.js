@@ -43,7 +43,7 @@ app.post('/api/v1/users', (req, res) => __awaiter(void 0, void 0, void 0, functi
     // return res.json(result);
     return res.status(201).json({ result, token });
 }));
-app.get('/api/v1/users', veriToken_1.TokenValidation, (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+app.get('/api/v1/users', (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     const users = yield prisma.usuario.findMany();
     return res.json(users);
 }));
@@ -59,12 +59,25 @@ app.post('/api/v1/playlist', (req, res) => __awaiter(void 0, void 0, void 0, fun
 }));
 app.get('/api/v1/playlist', (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     const playlists = yield prisma.playlist.findMany({
-        include: { songs: true },
+        include: {
+            songs: {
+                select: {
+                    id: true,
+                    name: true,
+                    artist: true,
+                    album: true,
+                    year: true,
+                    genre: true,
+                    duration: true,
+                    playlistid: true,
+                }
+            }
+        },
     });
     return res.json(playlists);
 }));
 app.post('/api/v1/songs', (req, res) => __awaiter(void 0, void 0, void 0, function* () {
-    const { name, artist, album, year, genre, duration, namePlaylist } = req.body;
+    const { name, artist, album, year, genre, duration, privacy, namePlaylist } = req.body;
     const result = yield prisma.song.create({
         data: {
             name: name,
@@ -73,21 +86,60 @@ app.post('/api/v1/songs', (req, res) => __awaiter(void 0, void 0, void 0, functi
             year: year,
             genre: genre,
             duration: duration,
+            privacy: privacy,
             playlist: { connect: { name: namePlaylist } },
         },
     });
     return res.json(result);
 }));
-app.get('/api/v1/songs', (req, res) => __awaiter(void 0, void 0, void 0, function* () {
-    const songs = yield prisma.song.findMany();
-    return res.json(songs);
+app.get('/api/v1/songs', (req, res, next) => __awaiter(void 0, void 0, void 0, function* () {
+    if (!req.headers.authorization) {
+        const songs = yield prisma.song.findMany({
+            where: { privacy: false },
+            select: {
+                id: true,
+                name: true,
+                artist: true,
+                album: true,
+                year: true,
+                genre: true,
+                duration: true,
+                playlistid: true,
+            }
+        });
+        return next(res.json(songs));
+    }
+    ;
+    const token = req.headers.authorization.split(' ')[1];
+    if (!token) {
+        return next(res.status(400).json('Access token is required'));
+    }
+    try {
+        jwt.verify(token, process.env.TOKEN_SECRET);
+        const songs = yield prisma.song.findMany({
+            select: {
+                id: true,
+                name: true,
+                artist: true,
+                album: true,
+                year: true,
+                genre: true,
+                duration: true,
+                playlistid: true,
+            }
+        });
+        return next(res.json(songs));
+    }
+    catch (_a) {
+        return next(res.status(400).json('Access token is Incorrect'));
+    }
 }));
 app.post('/api/v1/users/login', (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     const { email, password } = req.body;
     const user = yield prisma.usuario.findUnique({
         where: {
             email: email,
-        }
+        },
     });
     if (!user)
         return res.status(400).json('Email or password is wrong');
