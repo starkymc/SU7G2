@@ -25,8 +25,8 @@ exports.create_song = async(req:Request, res:Response)=>{
     return res.json(result);      
 };
 
-
-exports.get_songs = TokenValidation, async(req: Request,res: Response)=>{
+// con token denegna, pero autenticado no funciona xd
+exports.get_songs = async(req: Request,res: Response)=>{
     const songs = await prisma.song.findMany();
     return res.json(songs);
 };

@@ -10,9 +10,6 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 const client_1 = require("@prisma/client");
-//import bcrypt from 'bcryptjs';
-// import {TokenValidation} from "./../veriToken"
-const veriToken_1 = require("./../veriToken");
 const prisma = new client_1.PrismaClient();
 //const jwt = require('jsonwebtoken')
 // Create a song and is inserted the playlistid
@@ -32,7 +29,7 @@ exports.create_song = (req, res) => __awaiter(void 0, void 0, void 0, function* 
     });
     return res.json(result);
 });
-exports.get_songs = veriToken_1.TokenValidation, (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+exports.get_songs = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     const songs = yield prisma.song.findMany();
     return res.json(songs);
 });
