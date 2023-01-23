@@ -16,15 +16,123 @@ const express_1 = __importDefault(require("express"));
 const dotenv_1 = __importDefault(require("dotenv"));
 const client_1 = require("@prisma/client");
 const bcryptjs_1 = __importDefault(require("bcryptjs"));
+const cors_1 = __importDefault(require("cors"));
 const jwt = require("jsonwebtoken");
 const prisma = new client_1.PrismaClient();
 const app = (0, express_1.default)();
 const port = process.env.PORT;
+app.use((0, cors_1.default)({
+    origin: ['http://localhost:3000']
+}));
 app.use(express_1.default.json());
 dotenv_1.default.config();
+// Swagger
+const swagger_ui_express_1 = __importDefault(require("swagger-ui-express"));
+const swagger_jsdoc_1 = __importDefault(require("swagger-jsdoc"));
+const swaggerOptions_1 = require("./swaggerOptions");
 app.get('/', (req, res) => {
     res.send('<h1>Hola</h1>');
 });
+// GRUPOS ENDPOINT
+/**
+ * @swagger
+ * tags:
+ *  name: Usuario
+ *  description: Usuarios endpoint
+ */
+/**
+ * @swagger
+ * tags:
+ *  name: Playlist
+ *  description: Playlist endpoint
+ */
+// SWAGGER COMPONENT
+/**
+ * @swagger
+ * components:
+ *  schemas:
+ *    User:
+ *      type: object
+ *      properties:
+ *        id:
+ *          type: int
+ *          description: auto-generado
+ *        email:
+ *          type: string
+ *          description: Email del usuario
+ *        name:
+ *          type: string
+ *          description: Nombre del usuario
+ *        password:
+ *          type: string
+ *          description: Contraseña del usuario
+ *        last_session:
+ *          type: string
+ *          description: Autogenerado - Ultima sesion
+ *        create_at:
+ *          type: DateTime
+ *          description: Autogenerado - Fecha de creacion
+ *        date_born:
+ *          type: string
+ *          description: Fecha de nacimiento
+ *      required:
+ *        - email
+ *        - name
+ *        - password
+ *      example:
+ *        name: jorge
+ *        email: jorge@gmail.com
+ *        password: "1234"
+ *
+ */
+/**
+ * @swagger
+ * components:
+ *  schemas:
+ *    Playlist:
+ *      type: object
+ *      properties:
+ *        id:
+ *          type: int
+ *          description: auto-generado
+ *        name:
+ *          type: string
+ *          description: Nombre de la playlist
+ *        userId:
+ *          type: string
+ *          description: Id del usuario
+ *        songs:
+ *          type: string
+ *          description: Id de la song
+ *      required:
+ *        - name
+ *        - userId
+ *      example:
+ *        name: Playlist 8
+ *        userEmail: admin@gmail.com
+ *
+ *
+ */
+// DOCUMENTACION
+/**
+ * @swagger
+ * /api/v1/users:
+ *  post:
+ *    summary: Crea un nuevo usuario
+ *    tags: [Usuario]
+ *    requestBody:
+ *      required: true
+ *      content:
+ *        application/json:
+ *          schema:
+ *            $ref: '#/components/schemas/User'
+ *    responses:
+ *      200:
+ *        description: El usuario fue creado
+ *
+ *
+ *
+ */
 app.post('/api/v1/users', (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     const { name, email, password, date_born } = req.body;
     const passwordHash = yield bcryptjs_1.default.hash(password, 10);
@@ -38,10 +146,69 @@ app.post('/api/v1/users', (req, res) => __awaiter(void 0, void 0, void 0, functi
     });
     return res.json(result);
 }));
+/**
+ * @swagger
+ * /api/v1/users:
+ *  get:
+ *    summary: Muestra todos los usuarios
+ *    tags: [Usuario]
+ *    responses:
+ *      200:
+ *        description: Lista de usuarios
+ *        content:
+ *          application/json:
+ *            schema:
+ *              type: array
+ *              items:
+ *                $ref: '#/components/schemas/User'
+ *              example:
+ *                id: 1,
+ *                email: stark@example.com
+ *                name: stark
+ *                password: $2fdsf4343Ixfdsa4534
+ *                last_session: 2023-01-21T02:26:10.720Z
+ *                create_at: 2023-01-21T02:26:10.720Z
+ *                date_born: null
+ *
+ *
+ */
 app.get('/api/v1/users', (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     const users = yield prisma.usuario.findMany();
     return res.json(users);
 }));
+/**
+ * @swagger
+ * /api/v1/users/login:
+ *  post:
+ *    summary: Login del usuario
+ *    tags: [Usuario]
+ *    requestBody:
+ *      required: true
+ *      content:
+ *        application/json:
+ *          schema:
+ *            $ref: '#/components/schemas/User'
+ *          example:
+ *            email: stark@example.com
+ *            password: "3432"
+ *    responses:
+ *      200:
+ *        description: Obtiene un token
+ *        content:
+ *          application/json:
+ *            schema:
+ *              type: array
+ *              properties:
+ *                $ref: '#/components/schemas/User'
+ *              required:
+ *                - name
+ *              example:
+ *               token: ey64JdsGodfsdpfdsepeRWEpfDfpdfsFDPSfdsPF
+ *
+ *
+ *
+ *
+ */
 app.post("/api/v1/users/login", (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     const { email, password } = req.body;
     const user = yield prisma.usuario.findUnique({
@@ -80,6 +247,38 @@ function verifyToken(req, res, next) {
 app.get('/', (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     res.send('<h1>Hola<h1>');
 }));
+/**
+ * @swagger
+ * /api/v1/playlist:
+ *  post:
+ *    summary: Creacion de playlist
+ *    tags: [Playlist]
+ *    requestBody:
+ *      required: true
+ *      content:
+ *        application/json:
+ *          schema:
+ *            $ref: '#/components/schemas/Playlist'
+ *    responses:
+ *      200:
+ *        description: La playlist fue creada
+ *        content:
+ *          application/json:
+ *            schema:
+ *              type: array
+ *              properties:
+ *                $ref: '#/components/schemas/Playlist'
+ *              required:
+ *                - name
+ *              example:
+ *               id: 8
+ *               name: Playlist 8
+ *               userId: 3
+ *
+ *
+ *
+ *
+ */
 app.post('/api/v1/playlist', (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     const { name, userEmail } = req.body;
     const result = yield prisma.playlist.create({
@@ -90,12 +289,55 @@ app.post('/api/v1/playlist', (req, res) => __awaiter(void 0, void 0, void 0, fun
     });
     return res.json(result);
 }));
+/**
+ * @swagger
+ * /api/v1/playlist:
+ *  get:
+ *    summary: Muestra todas las playlists
+ *    tags: [Playlist]
+ *    responses:
+ *      200:
+ *        description: Lista de las playlists
+ *        content:
+ *          application/json:
+ *            schema:
+ *              type: array
+ *              items:
+ *                 $ref: '#/components/schemas/Playlist'
+ *              example:
+ *                id : 5
+ *                name: Playlist 5
+ *                userId: 2
+ *                songs: []
+ *
+ */
 app.get('/api/v1/playlist', (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     const playlists = yield prisma.playlist.findMany({
         include: { songs: true },
     });
     return res.json(playlists);
 }));
+/**
+ * @swagger
+ * /api/v1/songs:
+ *  post:
+ *    summary: Creacion de song
+ *    tags: [Songs]
+ *    requestBody:
+ *      required: true
+ *      content:
+ *        application/json:
+ *          schema:
+ *            $ref: '#/components/schemas/Songs'
+ *    responses:
+ *      200:
+ *        description: La Cancion fue creada
+
+ *
+ *
+ *
+ *
+ */
 app.post('/api/v1/songs', (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     const { name, artist, album, year, genre, duration, isxprivate, namePlaylist } = req.body;
     const result = yield prisma.song.create({
@@ -112,6 +354,96 @@ app.post('/api/v1/songs', (req, res) => __awaiter(void 0, void 0, void 0, functi
     });
     return res.json(result);
 }));
+/**
+ * @swagger
+ * components:
+ *  securitySchemes:
+ *    bearerAuth:
+ *      type: http
+ *      scheme: bearer
+ *      bearerFormat: JWT
+ *  security:
+ *    - basicAuth: []
+ *  schemas:
+ *    Songs:
+ *      type: object
+ *      properties:
+ *        id:
+ *          type: int
+ *          description: auto-generado
+ *        name:
+ *          type: string
+ *          description: Nombre de la cancion
+ *        artist:
+ *          type: string
+ *          description: Nombre del artista
+ *        album:
+ *          type: string
+ *          description: Album
+ *        year:
+ *          type: int
+ *          description: Año de lanzamiento
+ *        genre:
+ *          type: string
+ *          description: Genero
+ *        duration:
+ *          type: int
+ *          description: Duracion de la musica
+ *        isxprivate:
+ *          type: string
+ *          description: Publico o privado
+ *        playlist:
+ *          type: string
+ *          description: Nombre de la playlist
+ *
+ *      required:
+ *        - name
+ *        - artist
+ *        - album
+ *        - year
+ *        - genre
+ *        - duration
+ *        - isxprivate
+ *        - playlist
+ *      example:
+ *        name: Cancion
+ *        artist: Artista
+ *        album: Album
+ *        year: 2022
+ *        genre: Pop
+ *        duration: 250
+ *        isxprivate: true
+ *        playlist: Playlist Carlos
+ *
+ *  parameters:
+ *    songId:
+ *      in: path
+ *      name: id
+ *      required: true
+ *      schema:
+ *        type: string
+ *        description: El id de la song
+ *
+ */
+/**
+ * @swagger
+ * /api/v1/songs:
+ *  get:
+ *    summary: Muestra la lista de canciones ( Se necesita un token)
+ *    tags: [Songs]
+ *    responses:
+ *      200:
+ *        description: Lista de canciones
+ *        content:
+ *          application/json:
+ *            schemas:
+ *              type: array
+ *              items:
+ *                $ref: '#/components/schemas/Songs'
+ *
+ *
+ *
+ */
 app.get("/api/v1/songs", verifyToken, (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     const songs_all = yield prisma.song.findMany();
     const songs_public = yield prisma.song.findMany({
@@ -126,6 +458,29 @@ app.get("/api/v1/songs", verifyToken, (req, res) => __awaiter(void 0, void 0, vo
         }
     });
 }));
+/**
+ * @swagger
+ * /api/v1/songs/{id}:
+ *  get:
+ *    summary: Obtiene una cancion por id ( Se necesita un token)
+ *    tags: [Songs]
+ *    parameters:
+ *      - $ref: '#/components/parameters/songId'
+ *    responses:
+ *      200:
+ *        description: Se obtuvo la cancion
+ *        content:
+ *          application/json:
+ *            schemas:
+ *              type: array
+ *              items:
+ *                $ref: '#/components/schemas/Songs'
+ *      404:
+ *        description: La cancion no fue encontrada
+ *
+ *
+ *
+ */
 app.get('/api/v1/songs/:id', verifyToken, (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     const { id } = req.params;
     const songs = yield prisma.song.findFirst({
@@ -134,7 +489,7 @@ app.get('/api/v1/songs/:id', verifyToken, (req, res) => __awaiter(void 0, void 0
     return jwt.verify(req.token, process.env.TOKEN_SECRET, (error) => {
         if (songs === null || songs === void 0 ? void 0 : songs.isxprivate) {
             if (error) {
-                res.status(403).json({ privado: 'token incorrecto' });
+                res.status(403).json({ privado: 'Esta cancion es privada necesitas un token verificado' });
             }
             else {
                 res.status(200).json(songs);
@@ -148,6 +503,9 @@ app.get('/api/v1/songs/:id', verifyToken, (req, res) => __awaiter(void 0, void 0
 app.listen(port, () => {
     console.log(`http://localhost:${port}`);
 });
+// Ruta Swagger
+const specs = (0, swagger_jsdoc_1.default)(swaggerOptions_1.options);
+app.use('/docs', swagger_ui_express_1.default.serve, swagger_ui_express_1.default.setup(specs));
 /*____________________________________________________________________*/
 // import express, { Express, Request, Response } from 'express';
 // //import { PrismaClient } from '@prisma/client'
