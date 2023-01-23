@@ -51,10 +51,15 @@ exports.login = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     const checkPassword = bcryptjs_1.default.compareSync(password, user.password);
     if (!checkPassword)
         return res.status(400).json('Email or password is wrong');
-    const token = jwt.sign(user, process.env.TOKEN_SECRET, {
-        expiresIn: "1h",
+    // const token = jwt.sign(user,process.env.TOKEN_SECRET,{
+    //   expiresIn: "1h",
+    // });
+    jwt.sign({ user: user }, process.env.TOKEN_SECRET, { expiresIn: '1h' }, (err, token) => {
+        return res.json({
+            token: token
+        });
     });
-    return res.status(201).json(token);
+    // return res.status(201).json(token);
 });
 exports.verify_token = veriToken_1.TokenValidation, (req, res) => {
     res.send('<h1>Express server</h1>');
