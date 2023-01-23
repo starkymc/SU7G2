@@ -14,7 +14,6 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 Object.defineProperty(exports, "__esModule", { value: true });
 const client_1 = require("@prisma/client");
 const bcryptjs_1 = __importDefault(require("bcryptjs"));
-const veriToken_1 = require("./../veriToken");
 const prisma = new client_1.PrismaClient();
 const jwt = require('jsonwebtoken');
 const dotenv_1 = __importDefault(require("dotenv"));
@@ -31,12 +30,29 @@ exports.create_user = (req, res) => __awaiter(void 0, void 0, void 0, function* 
         },
     });
     // Retorna la informacion
-    return res.status(201).json({ result });
+    return res.status(201).json(result);
 });
 // 
-exports.get_users = veriToken_1.TokenValidation, (req, res) => __awaiter(void 0, void 0, void 0, function* () {
-    const users = yield prisma.usuario.findMany();
-    return res.json(users);
+exports.get_users = (req, res, next) => __awaiter(void 0, void 0, void 0, function* () {
+    // Token Validation
+    if (!req.headers.authorization) {
+        return next(res.status(401).json('Access Denied'));
+    }
+    ;
+    const token = req.headers.authorization.split(' ')[1];
+    if (!token) {
+        return next(res.status(401).json('Access token is required'));
+    }
+    try {
+        jwt.verify(token, process.env.TOKEN_SECRET);
+        const users = yield prisma.usuario.findMany();
+        return next(res.json(users));
+    }
+    catch (_a) {
+        return next(res.status(401).json('Access token is Incorrect'));
+    }
+    // const users = await prisma.usuario.findMany();
+    // return res.json(users);
 });
 // User login
 exports.login = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
@@ -47,15 +63,12 @@ exports.login = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
         }
     });
     if (!user)
-        return res.status(400).json('Email or password is wrong');
+        return res.status(401).json('Email or password is wrong');
     const checkPassword = bcryptjs_1.default.compareSync(password, user.password);
     if (!checkPassword)
-        return res.status(400).json('Email or password is wrong');
+        return res.status(401).json('Email or password is wrong');
     const token = jwt.sign(user, process.env.TOKEN_SECRET, {
         expiresIn: "1h",
     });
     return res.status(201).json(token);
 });
-exports.verify_token = veriToken_1.TokenValidation, (req, res) => {
-    res.send('<h1>Express server</h1>');
-};

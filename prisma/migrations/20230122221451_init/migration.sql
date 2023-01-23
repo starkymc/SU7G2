@@ -5,11 +5,7 @@ CREATE TABLE "Usuario" (
     "name" TEXT NOT NULL,
     "password" TEXT NOT NULL,
     "last_session" DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
-<<<<<<<< HEAD:prisma/migrations/20230121005049_init/migration.sql
-    "created_at" DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
-========
     "create_at" DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
->>>>>>>> main:prisma/migrations/20230121022547_models/migration.sql
     "date_born" TEXT
 );
 
@@ -31,8 +27,8 @@ CREATE TABLE "Song" (
     "genre" TEXT NOT NULL,
     "duration" INTEGER NOT NULL,
     "privacy" BOOLEAN NOT NULL DEFAULT false,
-    "playlistid" INTEGER,
-    CONSTRAINT "Song_playlistid_fkey" FOREIGN KEY ("playlistid") REFERENCES "Playlist" ("id") ON DELETE SET NULL ON UPDATE CASCADE
+    "playlistid" INTEGER NOT NULL,
+    CONSTRAINT "Song_playlistid_fkey" FOREIGN KEY ("playlistid") REFERENCES "Playlist" ("id") ON DELETE RESTRICT ON UPDATE CASCADE
 );
 
 -- CreateIndex

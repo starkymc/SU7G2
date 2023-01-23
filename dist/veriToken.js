@@ -7,6 +7,7 @@ exports.TokenValidation = void 0;
 const jwt = require('jsonwebtoken');
 const dotenv_1 = __importDefault(require("dotenv"));
 dotenv_1.default.config();
+// export const TokenValidation = function(req:Request,res:Response,next:NextFunction) {
 function TokenValidation(req, res, next) {
     if (!req.headers.authorization) {
         return next(res.status(400).json('Access Denied'));
@@ -18,7 +19,7 @@ function TokenValidation(req, res, next) {
     }
     try {
         jwt.verify(token, process.env.TOKEN_SECRET);
-        next();
+        return next();
     }
     catch (_a) {
         return next(res.status(400).json('Access token is Incorrect'));
