@@ -1,3 +1,4 @@
+
 <div align="center">
 <h1 style="text-align: center;">Proyecto SU7G2 - Unidad 7</h1>
 
@@ -10,13 +11,15 @@
 <img aling="center" width="500" height="400" src="https://i.ibb.co/PgqTxTq/2023-01-24-14h33-53.png" />
 </div>
 
+
+
 Integrantes:
 
 - 👨‍💻 Starky Medina Caldas
 - 👨‍💻 Jhohan Jancco Chara
 - 👨‍💻 Henry Ccoillo
+<hr>
 
-## **Proyecto SU7G2**
 ### **Indicaciones principales del proyecto**
 ### **Clonar el proyecto**
 
