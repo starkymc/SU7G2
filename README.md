@@ -14,7 +14,7 @@ Integrantes:
 ### **Indicaciones del proyecto**
 ### **Clonar el proyecto**
 
-    git clone https://github.com/JhohanJC/SU7G2.git
+    git clone https://github.com/starkymc/SU7G2.git
 
 ### **Instalar dependencias necesarios**
 
