@@ -1,9 +1,15 @@
-# **Proyecto SU7G2 - Unidad 7**
+<div align="center">
+<h1 style="text-align: center;">Proyecto SU7G2 - Unidad 7</h1>
+
 
 <h2>Documentación del proyecto en Swagger </h2>
 
     http://localhost:3000/docs
-    
+</div>
+<div align="center">
+<img aling="center" width="500" height="400" src="https://i.ibb.co/PgqTxTq/2023-01-24-14h33-53.png" />
+</div>
+
 Integrantes:
 
 - 👨‍💻 Starky Medina Caldas
