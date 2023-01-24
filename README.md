@@ -11,7 +11,7 @@ Integrantes:
 - 👨‍💻 Henry Ccoillo
 
 ## **Proyecto SU7G2**
-### **Indicaciones del proyecto**
+### **Indicaciones principales del proyecto**
 ### **Clonar el proyecto**
 
     git clone https://github.com/starkymc/SU7G2.git
@@ -30,7 +30,7 @@ Integrantes:
 
     npm run dev
     
-### **Descripción de las rutas**
+### **Indicación y descripción secundaria del proyecto**
 
 #### **En la ruta: '/'**
 
