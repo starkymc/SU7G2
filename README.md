@@ -30,7 +30,7 @@ Integrantes:
 
     npm run dev
     
-### **Indicación y descripción secundaria del proyecto**
+### **Indicaciones adicionales del proyecto**
 
 #### **En la ruta: '/'**
 
@@ -58,18 +58,8 @@ Con credenciales de email y password se genera un token, por ejemplo:
       "password": "**********"
     }
 
-    
-#### **Para ver y crear playlist: /api/v1/playlist**
-Petición post:
 
-    
-    {
-      "name": "Playlist x",
-      "userEmail": "example@example.com"
-    }
-
-
-#### **Para ver y crear: /api/v1/songs**
+#### **Para ver canciones: /api/v1/songs**
 
 Petición post: 
 
@@ -83,21 +73,8 @@ Canciones públicas:
     
     "isxprivate": false
 
-Ejemplo de creación de canción:
-
-    {
-      "name": "Cancion x",
-      "artist": "Artista x",
-      "album": "Album x",
-      "year": 2022,
-      "genre": "example",
-      "duration": 250,
-      "isxprivate": true,
-      "playlist": "Playlist example"
-    }
-    
-    
-Petición get:
+        
+Petición get con o sin token:
 
 Con token: acceso a canciones privadas y públicas.
 
