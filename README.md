@@ -61,7 +61,7 @@ Con credenciales de email y password se genera un token, por ejemplo:
 
 #### **Para ver canciones: /api/v1/songs**
 
-Petición post: 
+Aclaraciones sobre canciones: 
 
 Canciones privadas
 
