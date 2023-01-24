@@ -466,20 +466,35 @@ app.post('/api/v1/songs', async(req: Request, res: Response)=>{
  *          
  *      
  */
-app.get("/api/v1/songs",  verifyToken, async(req: any, res: Response)=>{
-    const songs_all = await prisma.song.findMany();
-    const songs_public = await prisma.song.findMany({
-        where: { isxprivate: false },
-      })
+app.get("/api/v1/songs",  verifyToken, async(req: any, res: Response, next: NextFunction)=>{
+  if(!req.headers.authorization){
+    const songs = await prisma.song.findMany({
+        where:{isxprivate:false},
+    });
+    return next(res.json(songs));
+  };
+  const token = req.headers.authorization.split(' ')[1];
+
+  try{
+      jwt.verify(token,process.env.TOKEN_SECRET);
+      const songs = await prisma.song.findMany();
+      return next(res.json(songs));
+  }catch{
+      return next(res.status(401).json('Access token is Incorrect'));
+  }
+    // const songs_all = await prisma.song.findMany();
+    // const songs_public = await prisma.song.findMany({
+    //     where: { isxprivate: false },
+    //   })
 
       
-    return jwt.verify(req.token , process.env.TOKEN_SECRET, (error: Response)=>{
-        if(error){
-            res.status(403).json(songs_public);
-        }else{
-            res.status(200).json(songs_all);
-        }
-    });
+    // return jwt.verify(req.token , process.env.TOKEN_SECRET, (error: Response)=>{
+    //     if(error){
+    //         res.status(403).json(songs_public);
+    //     }else{
+    //         res.status(200).json(songs_all);
+    //     }
+    // });
 });
 
 
