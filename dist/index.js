@@ -444,7 +444,7 @@ app.post('/api/v1/songs', (req, res) => __awaiter(void 0, void 0, void 0, functi
  *
  *
  */
-app.get("/api/v1/songs", verifyToken, (req, res, next) => __awaiter(void 0, void 0, void 0, function* () {
+app.get("/api/v1/songs", (req, res, next) => __awaiter(void 0, void 0, void 0, function* () {
     if (!req.headers.authorization) {
         const songs = yield prisma.song.findMany({
             where: { isxprivate: false },

@@ -466,7 +466,7 @@ app.post('/api/v1/songs', async(req: Request, res: Response)=>{
  *          
  *      
  */
-app.get("/api/v1/songs",  verifyToken, async(req: any, res: Response, next: NextFunction)=>{
+app.get("/api/v1/songs", async(req: any, res: Response, next: NextFunction)=>{
   if(!req.headers.authorization){
     const songs = await prisma.song.findMany({
         where:{isxprivate:false},
